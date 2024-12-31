@@ -331,8 +331,28 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  if (!arr || arr.length < 3) {
+    return -1;
+  }
+
+  for (let i = 0; i < arr.length; i += 1) {
+    let leftSum = 0;
+    for (let j = 0; j < i; j += 1) {
+      leftSum += arr[j];
+    }
+
+    let rightSum = 0;
+    for (let k = i + 1; k < arr.length; k += 1) {
+      rightSum += arr[k];
+    }
+
+    if (leftSum === rightSum) {
+      return i;
+    }
+  }
+
+  return -1;
 }
 
 /**
@@ -356,8 +376,56 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  if (size <= 0) {
+    return [];
+  }
+
+  const matrix = [];
+  for (let i = 0; i < size; i += 1) {
+    matrix[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      matrix[i][j] = 0;
+    }
+  }
+
+  let num = 1;
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
+  let dir = 0;
+
+  while (top <= bottom && left <= right) {
+    if (dir === 0) {
+      for (let i = left; i <= right; i += 1) {
+        matrix[top][i] = num;
+        num += 1;
+      }
+      top += 1;
+    } else if (dir === 1) {
+      for (let i = top; i <= bottom; i += 1) {
+        matrix[i][right] = num;
+        num += 1;
+      }
+      right -= 1;
+    } else if (dir === 2) {
+      for (let i = right; i >= left; i -= 1) {
+        matrix[bottom][i] = num;
+        num += 1;
+      }
+      bottom -= 1;
+    } else if (dir === 3) {
+      for (let i = bottom; i >= top; i -= 1) {
+        matrix[i][left] = num;
+        num += 1;
+      }
+      left += 1;
+    }
+    dir = (dir + 1) % 4;
+  }
+
+  return matrix;
 }
 
 /**
@@ -435,8 +503,57 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  if (number < 10) {
+    return number;
+  }
+
+  const digits = [];
+  let tempNumber = number;
+
+  while (tempNumber > 0) {
+    digits[digits.length] = tempNumber % 10;
+    tempNumber = Math.floor(tempNumber / 10);
+  }
+
+  const n = digits.length;
+
+  let i = 1;
+  while (i < n && digits[i] >= digits[i - 1]) {
+    i += 1;
+  }
+
+  if (i === n) {
+    return number;
+  }
+
+  let j = 0;
+  while (digits[j] <= digits[i]) {
+    j += 1;
+  }
+
+  const swap = digits[i];
+  digits[i] = digits[j];
+  digits[j] = swap;
+
+  let left = 0;
+  let right = i - 1;
+  while (left < right) {
+    const tempSwap = digits[left];
+    digits[left] = digits[right];
+    digits[right] = tempSwap;
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+  let power = 1;
+  for (let k = 0; k < n; k += 1) {
+    result += digits[k] * power;
+    power *= 10;
+  }
+
+  return result;
 }
 
 module.exports = {
